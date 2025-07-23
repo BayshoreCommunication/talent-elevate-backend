@@ -16,6 +16,7 @@ const clientDetialsRouter = require("./routers/clientDetialsRouter");
 const textPlanGeneratorRouter = require("./routers/textPlanGeneratorRouter");
 const { stripeWebhookSecret, stripeSecretKey } = require("./secret");
 const Stripe = require("stripe");
+const resumeDetialsRouter = require("./routers/resumeDetialsRouter");
 
 const stripe = Stripe(stripeSecretKey);
 
@@ -40,7 +41,7 @@ app.use("/api", subscriptionRouter);
 app.use("/api", taxRangeSheetRouter);
 app.use("/api", clientDetialsRouter);
 app.use("/api", textPlanGeneratorRouter);
-
+app.use("/api", resumeDetialsRouter);
 // Basic route for testing
 app.get("/", (req, res) => {
   return res

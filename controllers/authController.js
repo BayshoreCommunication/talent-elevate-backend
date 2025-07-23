@@ -32,21 +32,42 @@ const userCredentialSignin = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email, role: "user" });
+    const user = await User.findOne({ email });
     if (!user) throw errorResponse(404, "User not found");
-    if (!await bcrypt.compare(password, user.password)) throw errorResponse(401, "Invalid credentials");
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) throw errorResponse(401, "Invalid credentials");
+
     if (user.isBanned) throw errorResponse(403, "User is banned");
     if (!user.isActive) throw errorResponse(403, "User is not active");
 
     const { password: _, ...userData } = user.toObject();
-    const accessToken = await createJsonWebToken({ userId: user._id, role: user.role }, jwtSecretKey, { expiresIn: "30d" });
 
-    res.cookie("accessToken", accessToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: "strict" });
-    return successResponse(res, { statusCode: 200, message: "User login successful", payload: { user: userData, accessToken } });
+    const accessToken = await createJsonWebToken(
+      { user: userData },
+      process.env.JWT_SECRET_KEY,  // 🔐 Ensure this is set in your .env file
+      { expiresIn: "30d" }
+    );
+
+    res.cookie("accessToken", accessToken, {
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+      httpOnly: true,
+      sameSite: "strict",
+    });
+
+    return successResponse(res, {
+      statusCode: 200,
+      message: "User login successful",
+      payload: {
+        user: userData,
+        accessToken,
+      },
+    });
   } catch (error) {
     next(error);
   }
 };
+
 
 // Social Login
 const userSocialSignin = async (req, res, next) => {

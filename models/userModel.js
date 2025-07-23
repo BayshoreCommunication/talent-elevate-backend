@@ -49,36 +49,6 @@ const userSchema = new Schema(
       trim: true,
     },
 
-    website: {
-      type: String,
-      trim: true,
-      validate: {
-        validator: function (value) {
-          return /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w.-]*)*\/?$/.test(
-            value
-          );
-        },
-        message: "Please enter a valid URL",
-      },
-    },
-
-    businessWebsite: {
-      type: String,
-      trim: true,
-      validate: {
-        validator: function (value) {
-          return /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w.-]*)*\/?$/.test(
-            value
-          );
-        },
-        message: "Please enter a valid URL",
-      },
-    },
-
-    brandColor: {
-      type: String,
-      trim: true,
-    },
 
     logoUrl: {
       type: String,
@@ -103,7 +73,7 @@ const userSchema = new Schema(
 
     currentSubscriptionType: {
       type: String,
-      // enum: ["month", "year"], 
+      // enum: ["month", "year"],
     },
 
     isAutoSubscription: {
@@ -120,12 +90,8 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
-
-
-    otp: { type: String }, 
-    otpExpiration: { type: Date }, 
-    isActive : {type: Boolean, default: false}
-
+    
+    isActive: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
@@ -133,5 +99,3 @@ const userSchema = new Schema(
 const User = model("User", userSchema);
 
 module.exports = User;
-
-

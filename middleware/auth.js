@@ -19,6 +19,9 @@ const isLoggedIn = async (req, res, next) => {
       throw createError(401, "Your token is invalid");
     }
 
+    console.log("check dfdsf", decoded);
+    
+
 
     if (!decoded?.user?.isActive) {
       throw createError(401, "User is not active");
